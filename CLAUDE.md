@@ -79,6 +79,8 @@ proomet/
 
 提交类型：`feat`、`chore`、`fix`、`docs`、`styles`、`refactor`
 
+示例:
+
 ```
 feat(tags): 简要的说明
 
