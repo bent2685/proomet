@@ -13,5 +13,8 @@ struct proometApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowStyle(.titleBar)
+        .defaultSize(width: 1000, height: 680)
+        .windowResizability(.contentMinSize)
     }
 }
