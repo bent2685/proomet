@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5C82173B2F780328005FD12A /* spec.md in Resources */ = {isa = PBXBuildFile; fileRef = 5C82173A2F780322005FD12A /* spec.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		5C8217242F77F929005FD12A /* proomet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = proomet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C82173A2F780322005FD12A /* spec.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = spec.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +37,7 @@
 		5C82171B2F77F929005FD12A = {
 			isa = PBXGroup;
 			children = (
+				5C82173A2F780322005FD12A /* spec.md */,
 				5C8217262F77F929005FD12A /* proomet */,
 				5C8217252F77F929005FD12A /* Products */,
 			);
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C82173B2F780328005FD12A /* spec.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
