@@ -5,8 +5,14 @@ struct PromptEditorView: View {
     @Bindable var prompt: PromptItem
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \PromptCategory.sortOrder) private var categories: [PromptCategory]
+    @Query private var allPrompts: [PromptItem]
 
     @State private var showCopiedToast = false
+    @State private var showTagEditor = false
+
+    private var allUsedTags: [String] {
+        Array(Set(allPrompts.flatMap(\.tags))).sorted()
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -35,8 +41,37 @@ struct PromptEditorView: View {
                 Divider()
                     .frame(height: 16)
 
-                // Tags
-                TagEditorView(tags: $prompt.tags)
+                // Tags button → popover
+                Button {
+                    showTagEditor.toggle()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "tag")
+                            .foregroundStyle(.secondary)
+                        if prompt.tags.isEmpty {
+                            Text("添加标签")
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ForEach(prompt.tags.prefix(3), id: \.self) { tag in
+                                Text(tag)
+                                    .font(.caption)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(.quaternary)
+                                    .clipShape(Capsule())
+                            }
+                            if prompt.tags.count > 3 {
+                                Text("+\(prompt.tags.count - 3)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $showTagEditor) {
+                    TagEditorView(tags: $prompt.tags, allTags: allUsedTags)
+                }
 
                 Spacer()
 
