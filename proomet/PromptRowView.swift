@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PromptRowView: View {
-    let prompt: PromptItem
+    @Bindable var prompt: PromptItem
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
