@@ -27,5 +27,21 @@ struct proometApp: App {
         .modelContainer(container)
         .defaultSize(width: 1000, height: 680)
         .windowResizability(.contentMinSize)
+        .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About proomet") {
+                    NSApplication.shared.orderFrontStandardAboutPanel(options: [
+                        .credits: NSAttributedString(
+                            string: "GitHub: https://github.com/bent2685/proomet",
+                            attributes: [
+                                .font: NSFont.systemFont(ofSize: 11),
+                                .link: URL(string: "https://github.com/bent2685/proomet")!
+                            ]
+                        ),
+                        .version: "beta"
+                    ])
+                }
+            }
+        }
     }
 }
