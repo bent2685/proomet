@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/platform-macOS_26+-blue?logo=apple" alt="Platform">
+  <img src="https://img.shields.io/badge/platform-macOS_14+-blue?logo=apple" alt="Platform">
   <img src="https://img.shields.io/badge/swift-5.0-F05138?logo=swift&logoColor=white" alt="Swift">
   <img src="https://img.shields.io/badge/UI-SwiftUI-007AFF?logo=swift&logoColor=white" alt="SwiftUI">
   <img src="https://img.shields.io/badge/data-SwiftData-34C759" alt="SwiftData">
@@ -44,8 +44,7 @@
 
 ## Requirements
 
-- macOS 26+
-- Xcode 26+
+- macOS 14.0 (Sonoma) or later
 
 ## Building
 
