@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="proomet/Assets.xcassets/AppIcon.appiconset/icon_256x256.png" width="128" height="128" style="border-radius: 22%;" alt="proomet icon">
+  <img src="icon_rounded.png" width="128" height="128" alt="proomet icon">
 </p>
 
 <h1 align="center">proomet</h1>
