@@ -43,11 +43,24 @@ struct QuickPanelView: View {
             base = base.filter { $0.tags.contains(selectedTag) }
         }
 
-        if !searchText.isEmpty {
-            base = base.filter { fuzzyMatch(query: searchText, in: $0.title) }
+        if searchText.isEmpty {
+            // 无搜索时按使用权重排序
+            return Array(base.sorted { usageWeight($0) > usageWeight($1) }.prefix(8))
         }
 
-        return Array(base.prefix(8))
+        // 搜索时：标题命中 > 内容命中，同级按权重排序
+        var titleMatches: [PromptItem] = []
+        var contentMatches: [PromptItem] = []
+        for item in base {
+            if fuzzyMatch(query: searchText, in: item.title) {
+                titleMatches.append(item)
+            } else if fuzzyMatch(query: searchText, in: item.content) {
+                contentMatches.append(item)
+            }
+        }
+        titleMatches.sort { usageWeight($0) > usageWeight($1) }
+        contentMatches.sort { usageWeight($0) > usageWeight($1) }
+        return Array((titleMatches + contentMatches).prefix(8))
     }
 
     private var selectedPrompt: PromptItem? {
@@ -387,7 +400,21 @@ struct QuickPanelView: View {
         filterSelectionIndex = 0
     }
 
-    // MARK: - Fuzzy Match
+    // MARK: - Weight & Match
+
+    /// 使用权重：综合使用次数和最近使用时间
+    private func usageWeight(_ item: PromptItem) -> Double {
+        let countScore = Double(item.useCount)
+        let recencyScore: Double
+        if let lastUsed = item.lastUsedAt {
+            let hoursAgo = Date().timeIntervalSince(lastUsed) / 3600
+            // 越近使用衰减越少，24h 内权重高
+            recencyScore = max(0, 10 - hoursAgo / 2.4)
+        } else {
+            recencyScore = 0
+        }
+        return countScore + recencyScore
+    }
 
     private func fuzzyMatch(query: String, in string: String) -> Bool {
         let queryLower = query.lowercased()
