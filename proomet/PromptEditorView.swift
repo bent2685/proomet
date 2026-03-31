@@ -9,6 +9,7 @@ struct PromptEditorView: View {
 
     @State private var showCopiedToast = false
     @State private var showTagEditor = false
+    @State private var editingTags: [String] = []
 
     private var allUsedTags: [String] {
         Array(Set(allPrompts.flatMap(\.tags))).sorted()
@@ -70,7 +71,16 @@ struct PromptEditorView: View {
                 }
                 .buttonStyle(.plain)
                 .popover(isPresented: $showTagEditor) {
-                    TagEditorView(tags: $prompt.tags, allTags: allUsedTags)
+                    TagEditorView(tags: $editingTags, allTags: allUsedTags)
+                        .onDisappear {
+                            prompt.tags = editingTags
+                            prompt.updatedAt = .now
+                        }
+                }
+                .onChange(of: showTagEditor) { _, isShowing in
+                    if isShowing {
+                        editingTags = prompt.tags
+                    }
                 }
 
                 Spacer()
