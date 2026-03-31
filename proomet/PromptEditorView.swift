@@ -10,6 +10,7 @@ struct PromptEditorView: View {
     @State private var showCopiedToast = false
     @State private var showTagEditor = false
     @State private var editingTags: [String] = []
+    @State private var showFindBar = false
 
     private var allUsedTags: [String] {
         Array(Set(allPrompts.flatMap(\.tags))).sorted()
@@ -98,7 +99,7 @@ struct PromptEditorView: View {
             Divider()
 
             // Content editor
-            MarkdownEditorView(text: $prompt.content)
+            MarkdownEditorView(text: $prompt.content, isFindBarVisible: $showFindBar)
         }
         .onChange(of: prompt.title) { _, _ in
             prompt.updatedAt = .now
@@ -108,13 +109,23 @@ struct PromptEditorView: View {
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button {
-                    copyToClipboard()
-                } label: {
-                    Label(showCopiedToast ? "已复制" : "复制",
-                          systemImage: showCopiedToast ? "checkmark" : "doc.on.doc")
+                HStack(spacing: 8) {
+                    Button {
+                        showFindBar = true
+                    } label: {
+                        Label("查找", systemImage: "magnifyingglass")
+                    }
+                    .keyboardShortcut("f", modifiers: .command)
+                    .disabled(prompt.content.isEmpty)
+
+                    Button {
+                        copyToClipboard()
+                    } label: {
+                        Label(showCopiedToast ? "已复制" : "复制",
+                              systemImage: showCopiedToast ? "checkmark" : "doc.on.doc")
+                    }
+                    .disabled(prompt.content.isEmpty)
                 }
-                .disabled(prompt.content.isEmpty)
             }
         }
         .navigationTitle(prompt.title.isEmpty ? "新提示词" : prompt.title)

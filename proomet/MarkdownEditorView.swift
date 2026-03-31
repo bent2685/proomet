@@ -3,6 +3,7 @@ import AppKit
 
 struct MarkdownEditorView: NSViewRepresentable {
     @Binding var text: String
+    @Binding var isFindBarVisible: Bool
 
     func makeCoordinator() -> Coordinator {
         Coordinator(text: $text)
@@ -19,8 +20,11 @@ struct MarkdownEditorView: NSViewRepresentable {
         textView.isAutomaticTextReplacementEnabled = false
         textView.isAutomaticSpellingCorrectionEnabled = false
         textView.textContainerInset = NSSize(width: 8, height: 8)
+        textView.usesFindBar = true
+        textView.isIncrementalSearchingEnabled = true
         textView.delegate = context.coordinator
         textView.string = text
+        context.coordinator.textView = textView
         context.coordinator.applyHighlighting(to: textView)
         return scrollView
     }
@@ -33,13 +37,28 @@ struct MarkdownEditorView: NSViewRepresentable {
             textView.selectedRanges = selectedRanges
             context.coordinator.applyHighlighting(to: textView)
         }
+        if isFindBarVisible {
+            DispatchQueue.main.async {
+                context.coordinator.showFindBar()
+                isFindBarVisible = false
+            }
+        }
     }
 
     class Coordinator: NSObject, NSTextViewDelegate {
         var text: Binding<String>
+        weak var textView: NSTextView?
 
         init(text: Binding<String>) {
             self.text = text
+        }
+
+        func showFindBar() {
+            guard let textView else { return }
+            textView.window?.makeFirstResponder(textView)
+            let menuItem = NSMenuItem()
+            menuItem.tag = Int(NSTextFinder.Action.showFindInterface.rawValue)
+            textView.performFindPanelAction(menuItem)
         }
 
         nonisolated func textDidChange(_ notification: Notification) {
