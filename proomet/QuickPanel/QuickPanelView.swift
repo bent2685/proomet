@@ -24,6 +24,11 @@ struct QuickPanelView: View {
 
     // MARK: - Computed
 
+    /// 检测输入法是否正在组合输入（如中文拼音候选状态）
+    private var isIMEComposing: Bool {
+        NSTextInputContext.current?.client.hasMarkedText() ?? false
+    }
+
     private var usedTags: [String] {
         Array(Set(allPrompts.flatMap(\.tags))).sorted()
     }
@@ -86,9 +91,18 @@ struct QuickPanelView: View {
             .onChange(of: searchText) {
                 selectedIndex = 0
             }
-            .onKeyPress(.upArrow) { handleArrowUp(); return .handled }
-            .onKeyPress(.downArrow) { handleArrowDown(); return .handled }
-            .onKeyPress(.return) { handleReturn(); return .handled }
+            .onKeyPress(.upArrow) {
+                guard !isIMEComposing else { return .ignored }
+                handleArrowUp(); return .handled
+            }
+            .onKeyPress(.downArrow) {
+                guard !isIMEComposing else { return .ignored }
+                handleArrowDown(); return .handled
+            }
+            .onKeyPress(.return) {
+                guard !isIMEComposing else { return .ignored }
+                handleReturn(); return .handled
+            }
             .onKeyPress(.escape) { handleEscape(); return .handled }
             .onKeyPress(characters: .alphanumerics, phases: .down) { keyPress in
                 handleModifierKeyPress(keyPress)
